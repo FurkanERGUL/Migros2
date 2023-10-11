@@ -12,7 +12,7 @@ using System.Threading.Tasks;
 
 namespace Migros.DATA.Concrete
 {
-    public class AppUser : IdentityUser, IBaseEntity
+    public class AppUser : IdentityUser<int>, IBaseEntity
     {
         public string FirstName { get; set; }
         public string LastName { get; set; }
@@ -20,5 +20,6 @@ namespace Migros.DATA.Concrete
         public DateTime UpdateDate { get; set; }
         public DateTime DeleteDate { get; set; }
         public Status Status { get; set; }
+        public List<Order> Orders { get; set; }
     }
 }

@@ -14,7 +14,7 @@ namespace Migros.DAL.Abstract
         void Delete(T entity);
         bool Update(T entity);
         IList<T> GetAll();
-        //T GetById(int id);
+        T GetById(int id);
         bool Any(Expression<Func<T, bool>> filter);
     }
 }

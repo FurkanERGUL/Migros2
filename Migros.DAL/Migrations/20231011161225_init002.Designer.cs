@@ -12,8 +12,8 @@ using Migros.DAL.Contexts;
 namespace Migros.DAL.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20231010062252_init001")]
-    partial class init001
+    [Migration("20231011161225_init002")]
+    partial class init002
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -53,15 +53,15 @@ namespace Migros.DAL.Migrations
                     b.HasData(
                         new
                         {
-                            Id = "c6a4e47f-cf0b-443d-bbc1-87620af17b73",
-                            ConcurrencyStamp = "2574c25a-b5c4-4dea-b1e2-00a36e55b06c",
+                            Id = "d815d532-45fe-4a49-bc58-ec0e49dab510",
+                            ConcurrencyStamp = "20935a1c-23de-466f-bf85-25f2790cb7d5",
                             Name = "User",
                             NormalizedName = "USER"
                         },
                         new
                         {
-                            Id = "58f072be-cbbd-4b67-8c9d-babd51d3c526",
-                            ConcurrencyStamp = "51a39797-209f-4f8d-b55e-eddadefeb905",
+                            Id = "6d34c890-b51f-4aeb-8a70-965d2c58630a",
+                            ConcurrencyStamp = "d7b76609-776c-460d-984d-5e2ba0e8f957",
                             Name = "Admin",
                             NormalizedName = "ADMIN"
                         });
@@ -291,6 +291,41 @@ namespace Migros.DAL.Migrations
                     b.ToTable("Categories");
                 });
 
+            modelBuilder.Entity("Migros.DATA.Concrete.Order", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
+
+                    b.Property<DateTime>("CreateDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<DateTime>("DeleteDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("MusteriId")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<int>("Status")
+                        .HasColumnType("int");
+
+                    b.Property<DateTime>("UpdateDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("UserID")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("MusteriId");
+
+                    b.ToTable("Order");
+                });
+
             modelBuilder.Entity("Migros.DATA.Concrete.Product", b =>
                 {
                     b.Property<int>("ProductId")
@@ -307,6 +342,9 @@ namespace Migros.DAL.Migrations
 
                     b.Property<DateTime>("DeleteDate")
                         .HasColumnType("datetime2");
+
+                    b.Property<int>("OrderId")
+                        .HasColumnType("int");
 
                     b.Property<string>("ProductDescription")
                         .IsRequired()
@@ -325,6 +363,8 @@ namespace Migros.DAL.Migrations
                     b.HasKey("ProductId");
 
                     b.HasIndex("CategoryId");
+
+                    b.HasIndex("OrderId");
 
                     b.ToTable("Products");
                 });
@@ -380,16 +420,42 @@ namespace Migros.DAL.Migrations
                         .IsRequired();
                 });
 
+            modelBuilder.Entity("Migros.DATA.Concrete.Order", b =>
+                {
+                    b.HasOne("Migros.DATA.Concrete.AppUser", "Musteri")
+                        .WithMany()
+                        .HasForeignKey("MusteriId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Musteri");
+                });
+
             modelBuilder.Entity("Migros.DATA.Concrete.Product", b =>
                 {
-                    b.HasOne("Migros.DATA.Concrete.Category", null)
+                    b.HasOne("Migros.DATA.Concrete.Category", "Category")
                         .WithMany("Products")
                         .HasForeignKey("CategoryId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+
+                    b.HasOne("Migros.DATA.Concrete.Order", "Order")
+                        .WithMany("Products")
+                        .HasForeignKey("OrderId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Category");
+
+                    b.Navigation("Order");
                 });
 
             modelBuilder.Entity("Migros.DATA.Concrete.Category", b =>
+                {
+                    b.Navigation("Products");
+                });
+
+            modelBuilder.Entity("Migros.DATA.Concrete.Order", b =>
                 {
                     b.Navigation("Products");
                 });

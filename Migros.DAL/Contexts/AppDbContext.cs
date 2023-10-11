@@ -10,7 +10,7 @@ using System.Threading.Tasks;
 
 namespace Migros.DAL.Contexts
 {
-    public class AppDbContext : IdentityDbContext<AppUser, IdentityRole, string>
+    public class AppDbContext : IdentityDbContext<AppUser, IdentityRole<int>, int>
     {
         public AppDbContext(DbContextOptions options) : base(options)
         {
@@ -26,9 +26,10 @@ namespace Migros.DAL.Contexts
         protected override void OnModelCreating(ModelBuilder builder)
         {
 
-            builder.Entity<IdentityRole>().HasData(
+            builder.Entity<IdentityRole<int>>().HasData(
                     new IdentityRole
                     {
+
                         Name = "User",
                         NormalizedName = "USER",
                     },

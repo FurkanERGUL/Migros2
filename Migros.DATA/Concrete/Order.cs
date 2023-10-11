@@ -19,7 +19,7 @@ namespace Migros.DATA.Concrete
         //Navigation Property
 
         public string UserID { get; set; }
-        public AppUser Musteri { get; set; }
+        public AppUser User { get; set; }
 
         public List<Product> Products { get; set; }
 

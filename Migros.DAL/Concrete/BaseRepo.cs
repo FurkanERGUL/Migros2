@@ -1,4 +1,5 @@
-﻿using Migros.DAL.Abstract;
+﻿using Microsoft.EntityFrameworkCore;
+using Migros.DAL.Abstract;
 using Migros.DAL.Contexts;
 using Migros.DATA.Abstract;
 using Migros.DATA.Enums;
@@ -14,10 +15,11 @@ namespace Migros.DAL.Concrete
     public class BaseRepo<T> : IBaseRepo<T> where T :class, IBaseEntity
     {
         private readonly AppDbContext dbContext;
-
+        private readonly DbSet<T> table;
         public BaseRepo(AppDbContext dbContext)
         {
             this.dbContext = dbContext;
+            this.table = dbContext.Set<T>();
         }
 
         public bool Add(T entity)
@@ -31,22 +33,27 @@ namespace Migros.DAL.Concrete
 
         public bool Any(Expression<Func<T, bool>> filter)
         {
-            return dbContext.Set<T>().Any(filter);
+            return table.Any(filter);
         }
 
         public void Delete(T entity)
         {
             entity.DeleteDate = DateTime.Now;
             entity.Status = Status.Passive;
-            dbContext.Set<T>().Update(entity);
+            table.Update(entity);
             dbContext.SaveChanges();
+        }
+
+        public T GetById(int id)
+        {
+            return table.Find(id);
         }
 
         public bool Update(T entity)
         {
             entity.UpdateDate= DateTime.Now;
             entity.Status = Status.Modified;
-            dbContext.Set<T>().Update(entity);
+            table.Update(entity);
             if (dbContext.SaveChanges() > 0)
                 return true;
             else
@@ -55,7 +62,7 @@ namespace Migros.DAL.Concrete
 
         IList<T> IBaseRepo<T>.GetAll()
         {
-            var list=dbContext.Set<T>().ToList();
+            var list=table.ToList();
             return list;
         }
     }

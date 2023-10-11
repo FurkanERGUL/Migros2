@@ -17,17 +17,20 @@ builder.Services.AddControllersWithViews();
 var connection = builder.Configuration.GetConnectionString("DefaultConnection");
 builder.Services.AddDbContext<AppDbContext>(options => options.UseSqlServer(connection));
 
+
+
 builder.Services.AddScoped(typeof(IBaseRepo<>), typeof(BaseRepo<>));
-builder.Services.AddTransient(typeof(IBaseService<>), typeof(BaseService<>));
-
 builder.Services.AddScoped<ICategoryRepo, CategoryRepo>();
-builder.Services.AddTransient<ICategoryService, CategoryService>();
-
-builder.Services.AddScoped<IProductRepo, ProductRepo>();
-builder.Services.AddTransient<IProductService, ProductService>();
-
 builder.Services.AddScoped<IAppUserRepo, AppUserRepo>();
+builder.Services.AddScoped<IProductRepo, ProductRepo>();
+
+
+builder.Services.AddTransient(typeof(IBaseService<>), typeof(BaseService<>));
+builder.Services.AddTransient<ICategoryService, CategoryService>();
+builder.Services.AddTransient<IProductService, ProductService>();
 builder.Services.AddTransient<IAppUserService, AppUserService>();
+
+builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
 
 builder.Services.AddIdentity<AppUser, IdentityRole>(options =>
 {
@@ -43,7 +46,7 @@ builder.Services.AddIdentity<AppUser, IdentityRole>(options =>
 
     options.User.RequireUniqueEmail = false;
     options.User.AllowedUserNameCharacters = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789_";
-}).AddEntityFrameworkStores<AppDbContext>().AddDefaultTokenProviders().AddRoles<IdentityRole>();
+}).AddEntityFrameworkStores<AppDbContext>().AddDefaultTokenProviders().AddRoles<IdentityRole<int>>();
 
 var app = builder.Build();
 
@@ -59,6 +62,8 @@ app.UseHttpsRedirection();
 app.UseStaticFiles();
 
 app.UseRouting();
+
+app.UseAuthentication();
 
 app.UseAuthorization();
 

@@ -5,7 +5,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace Migros.DAL.Migrations
 {
-    public partial class init001 : Migration
+    public partial class init002 : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -179,6 +179,30 @@ namespace Migros.DAL.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "Order",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    CreateDate = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    UpdateDate = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    DeleteDate = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    Status = table.Column<int>(type: "int", nullable: false),
+                    UserID = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    MusteriId = table.Column<string>(type: "nvarchar(450)", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Order", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_Order_AspNetUsers_MusteriId",
+                        column: x => x.MusteriId,
+                        principalTable: "AspNetUsers",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "Products",
                 columns: table => new
                 {
@@ -190,7 +214,8 @@ namespace Migros.DAL.Migrations
                     UpdateDate = table.Column<DateTime>(type: "datetime2", nullable: false),
                     DeleteDate = table.Column<DateTime>(type: "datetime2", nullable: false),
                     Status = table.Column<int>(type: "int", nullable: false),
-                    CategoryId = table.Column<int>(type: "int", nullable: false)
+                    CategoryId = table.Column<int>(type: "int", nullable: false),
+                    OrderId = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -201,17 +226,23 @@ namespace Migros.DAL.Migrations
                         principalTable: "Categories",
                         principalColumn: "CategoryId",
                         onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_Products_Order_OrderId",
+                        column: x => x.OrderId,
+                        principalTable: "Order",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.InsertData(
                 table: "AspNetRoles",
                 columns: new[] { "Id", "ConcurrencyStamp", "Name", "NormalizedName" },
-                values: new object[] { "58f072be-cbbd-4b67-8c9d-babd51d3c526", "51a39797-209f-4f8d-b55e-eddadefeb905", "Admin", "ADMIN" });
+                values: new object[] { "6d34c890-b51f-4aeb-8a70-965d2c58630a", "d7b76609-776c-460d-984d-5e2ba0e8f957", "Admin", "ADMIN" });
 
             migrationBuilder.InsertData(
                 table: "AspNetRoles",
                 columns: new[] { "Id", "ConcurrencyStamp", "Name", "NormalizedName" },
-                values: new object[] { "c6a4e47f-cf0b-443d-bbc1-87620af17b73", "2574c25a-b5c4-4dea-b1e2-00a36e55b06c", "User", "USER" });
+                values: new object[] { "d815d532-45fe-4a49-bc58-ec0e49dab510", "20935a1c-23de-466f-bf85-25f2790cb7d5", "User", "USER" });
 
             migrationBuilder.CreateIndex(
                 name: "IX_AspNetRoleClaims_RoleId",
@@ -253,9 +284,19 @@ namespace Migros.DAL.Migrations
                 filter: "[NormalizedUserName] IS NOT NULL");
 
             migrationBuilder.CreateIndex(
+                name: "IX_Order_MusteriId",
+                table: "Order",
+                column: "MusteriId");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_Products_CategoryId",
                 table: "Products",
                 column: "CategoryId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Products_OrderId",
+                table: "Products",
+                column: "OrderId");
         }
 
         protected override void Down(MigrationBuilder migrationBuilder)
@@ -282,10 +323,13 @@ namespace Migros.DAL.Migrations
                 name: "AspNetRoles");
 
             migrationBuilder.DropTable(
-                name: "AspNetUsers");
+                name: "Categories");
 
             migrationBuilder.DropTable(
-                name: "Categories");
+                name: "Order");
+
+            migrationBuilder.DropTable(
+                name: "AspNetUsers");
         }
     }
 }

@@ -34,6 +34,11 @@ namespace Migros.Service.Concrete
             return _repo.GetAll();
         }
 
+        public T GetById(int id)
+        {
+            return _repo.GetById(id);
+        }
+
         public bool Update(T entity)
         {
             return _repo.Update(entity);

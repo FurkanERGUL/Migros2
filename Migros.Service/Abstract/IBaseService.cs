@@ -15,5 +15,6 @@ namespace Migros.Service.Abstract
         bool Update(T entity);
         bool Any(Expression<Func<T, bool>> filter);
         IList<T> GetAll();
+        T GetById(int id);
     }
 }
