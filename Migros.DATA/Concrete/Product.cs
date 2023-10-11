@@ -22,8 +22,9 @@ namespace Migros.DATA.Concrete
         
         //Navigation Property
         public int CategoryId { get; set; }
-        Category Category { get; set; }
-        public List<Order> Orders { get; set; }
+        public Category Category { get; set; }
+        public Order Order { get; set; }
+        public int OrderId { get; set; }
 
     }
 }
